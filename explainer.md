@@ -97,6 +97,43 @@ identical generation settings throughout.
 `Natnaela/my-qwen-0.5b-lora`, `MAX_NEW_TOKENS=64`, `do_sample=False`,
 `float16`, PEFT 0.14.0.
 
+The three conditions are loaded like this:
+
+```python
+from transformers import AutoModelForCausalLM
+from peft import PeftModel
+
+def load_base():
+    return AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL, torch_dtype=torch.float16
+    ).to("cuda")
+
+def load_unmerged():
+    return PeftModel.from_pretrained(load_base(), ADAPTER_PATH).to("cuda")
+
+def load_merged():
+    m = PeftModel.from_pretrained(load_base(), ADAPTER_PATH)
+    return m.merge_and_unload()   # adapter folded into weights here
+```
+
+Each condition is timed with 11 runs, first discarded as warmup:
+
+```python
+def timed_generate(model):
+    torch.cuda.synchronize()
+    t0 = time.perf_counter()
+    with torch.inference_mode():
+        model.generate(**inputs, max_new_tokens=64, do_sample=False)
+    torch.cuda.synchronize()
+    return time.perf_counter() - t0
+
+times = [timed_generate(model) for _ in range(11)][1:]
+mean  = sum(times) / len(times)
+```
+
+Full reproducible notebook is on
+[GitHub](https://github.com/Natnael-Alemseged/week12-lora-inference-latency/blob/main/instruction.md).
+
 | Condition | Mean latency (s) | Std dev (s) | Runs |
 |-----------|:---:|:---:|:---:|
 | Base | 0.027 | 0.001 | 10 |
