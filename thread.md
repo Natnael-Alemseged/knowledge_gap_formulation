@@ -1,8 +1,15 @@
 ## thread.md
 
-1. Why did a merged LoRA version of Qwen1.5-0.5B-Chat take almost the
-   same inference time as the bare base model — even though it has extra
-   trained weights baked in?
+1. Benchmarked a fine-tuned AI model against the original.
+
+   Expected it to be slower. It wasn't.
+
+   Base:        27 ms
+   Fine-tuned:  26 ms  ← within noise
+   Unmerged:    58 ms  ← 2× slower
+
+   The difference between the last two lines is one function call.
+   Here's what's actually happening inside:
 
 2. The key is the difference between merged and unmerged LoRA.
    Unmerged: `y = W₀x + BAx` — the adapter runs as a separate branch
