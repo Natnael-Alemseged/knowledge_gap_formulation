@@ -26,10 +26,11 @@
    Unmerged: 58 ms ± 5 ms  ← 2.15× slower
    Merged:   26 ms ± 1 ms  ← within noise of base
 
-5. The real speed levers are the ones that reduce memory traffic or
-   decode steps: quantization, batching, speculative decoding, or a
-   smaller model. Merged LoRA touches none of these — which is exactly
-   why it shows up as a near-zero latency difference.
+5. Merged LoRA changes the values inside the weight matrices, but not
+   the shape of the inference computation.
+
+   Unmerged LoRA leaves an extra low-rank path alive during each forward
+   pass — that is where the extra cost comes from.
 
 6. Full explainer with benchmark code and the LoRA paper citation:
    https://dev.to/natnael_alemseged/why-merged-lora-barely-changes-inference-time-2mhj
