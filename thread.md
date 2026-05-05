@@ -1,15 +1,13 @@
 ## thread.md
 
-1. Benchmarked a fine-tuned AI model against the original.
+1. We added thousands of learned weights to an AI model.
 
-   Expected it to be slower. It wasn't.
+   It ran at exactly the same speed as the original.
 
-   Base:        27 ms
-   Fine-tuned:  26 ms  ← within noise
-   Unmerged:    58 ms  ← 2× slower
+   But leave those weights in a slightly different form?
+   Twice as slow.
 
-   The difference between the last two lines is one function call.
-   Here's what's actually happening inside:
+   The difference is one function call. Here's what's happening inside:
 
 2. The key is the difference between merged and unmerged LoRA.
    Unmerged: `y = W₀x + BAx` — the adapter runs as a separate branch
