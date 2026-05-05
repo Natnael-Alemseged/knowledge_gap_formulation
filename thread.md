@@ -27,4 +27,4 @@
    why it shows up as a near-zero latency difference.
 
 6. Full explainer with benchmark code and the LoRA paper citation:
-   [link to blog post]
+   https://dev.to/natnael_alemseged/why-merged-lora-barely-changes-inference-time-2mhj
