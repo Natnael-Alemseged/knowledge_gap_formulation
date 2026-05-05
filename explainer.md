@@ -2,11 +2,12 @@
 
 # Why Merged LoRA Barely Changes Inference Time
 
-In a Week 11 ablation, a merged LoRA version of Qwen1.5-0.5B-Chat took
-14,228 ms per task, while the bare base model took 14,045 ms. That 183 ms
-gap is only about 1.3%. Why doesn't merging in extra trained weights make
-inference slower? And if the adapter is not the thing driving latency,
-what actually is?
+While benchmarking a sales conversion classifier fine-tuned on
+Qwen1.5-0.5B-Chat, a merged LoRA version of the model took 14,228 ms per
+task while the bare base model took 14,045 ms. That 183 ms gap is only
+about 1.3%. Why doesn't merging in extra trained weights make inference
+slower? And if the adapter is not the thing driving latency, what
+actually is?
 
 The short answer is: **once LoRA is merged, the model is no longer doing
 "base model plus adapter" at inference time. It is just doing the base
@@ -149,11 +150,11 @@ The pattern matches the prediction exactly:
   extra low-rank matrix multiplications `BAx` run on every forward pass,
   and at the small batch sizes used in decode they add real cost.
 
-This also recontextualises the original 14,228 ms vs 14,045 ms observation.
-Those were full agent task timings — prompt processing, tool calls,
-multi-step generation — not isolated generation latency. The 183 ms
-difference there was likely noise or tool-call variance, not evidence that
-merging adds cost.
+This also recontextualises the original 14,228 ms vs 14,045 ms observation
+from the sales classifier benchmark. Those were end-to-end task timings —
+prompt processing, tool calls, multi-step generation — not isolated
+generation latency. The 183 ms difference was likely noise or tool-call
+variance, not evidence that merging adds cost.
 
 The full benchmark code is available on
 [GitHub](https://github.com/Natnael-Alemseged/week12-lora-inference-latency/blob/main/instruction.md)
