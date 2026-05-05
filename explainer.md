@@ -2,11 +2,11 @@
 
 # Why Merged LoRA Barely Changes Inference Time
 
-**The question:** In a Week 11 ablation, a merged LoRA version of
-Qwen1.5-0.5B-Chat took 14,228 ms per task, while the bare base model took
-14,045 ms. That 183 ms gap is only about 1.3%. Why doesn't merging in
-extra trained weights make inference slower? And if the adapter is not
-the thing driving latency, what actually is?
+In a Week 11 ablation, a merged LoRA version of Qwen1.5-0.5B-Chat took
+14,228 ms per task, while the bare base model took 14,045 ms. That 183 ms
+gap is only about 1.3%. Why doesn't merging in extra trained weights make
+inference slower? And if the adapter is not the thing driving latency,
+what actually is?
 
 The short answer is: **once LoRA is merged, the model is no longer doing
 "base model plus adapter" at inference time. It is just doing the base
@@ -15,12 +15,11 @@ shapes do not change, the number of layers does not change, and the
 number of bytes that must be moved for each generated token is almost
 the same. On modern GPUs, that last point matters most.
 
-One caution before explaining the mechanism: with only one timing run
-per system on a shared Colab T4, you cannot prove that 183 ms is
-"real." A 1.3% gap is **plausibly noise**, not evidence that merged LoRA
-adds meaningful latency. The mechanism below explains why we should
-expect the difference to be near zero, and the controlled benchmark
-below confirms it directly.
+One caution upfront: with only one timing run per system on a shared
+Colab T4, you cannot prove that 183 ms is "real." A 1.3% gap is
+**plausibly noise**, not evidence that merged LoRA adds meaningful latency.
+The mechanism below explains why we should expect the difference to be
+near zero, and the controlled benchmark below confirms it directly.
 
 ## What merged LoRA changes, and what it does not
 
@@ -56,7 +55,7 @@ is folded into the original weights before any forward pass runs.
 
 ## Where token-generation time actually goes
 
-To explain why this often makes almost no latency difference, we need to
+To understand why this makes almost no latency difference, we need to
 separate two phases of inference:
 
 **Prefill.** The model processes the input prompt and builds the KV
@@ -84,17 +83,15 @@ requires moving essentially the same amount of model data through memory.
 The values inside the matrix changed, but the amount of work the GPU
 must schedule and the amount of memory it must read are almost the same.
 
-This is the load-bearing mechanism behind your peer's result: **for
-merged LoRA, the expensive part is still streaming the same-sized weight
-tensors and running the same decode loop, not "carrying extra learned
-knowledge."**
+**The expensive part is still streaming the same-sized weight tensors and
+running the same decode loop — not "carrying extra learned knowledge."**
 
 ## The controlled benchmark
 
-To go beyond the single-run Week 11 numbers, the following three-way
-benchmark was run on the same Colab T4 — base model vs. unmerged adapter
-vs. merged adapter — with 10 measured runs per condition (first run
-discarded as warmup) and identical generation settings throughout.
+To go beyond a single-run observation, the following three-way benchmark
+was run on a Colab T4 — base model vs. unmerged adapter vs. merged adapter
+— with 10 measured runs per condition (first run discarded as warmup) and
+identical generation settings throughout.
 
 **Setup:** `Qwen/Qwen1.5-0.5B-Chat` base model, adapter
 `Natnaela/my-qwen-0.5b-lora`, `MAX_NEW_TOKENS=64`, `do_sample=False`,
@@ -115,34 +112,15 @@ The pattern matches the prediction exactly:
   extra low-rank matrix multiplications `BAx` run on every forward pass,
   and at the small batch sizes used in decode they add real cost.
 
-This also recontextualises the original 14,228 ms vs 14,045 ms gap from
-Week 11. Those were full agent task timings — prompt processing, tool
-calls, multi-step generation — not isolated generation latency. The
-183 ms difference there was likely noise or tool-call variance, not
-evidence that merging adds cost.
+This also recontextualises the original 14,228 ms vs 14,045 ms observation.
+Those were full agent task timings — prompt processing, tool calls,
+multi-step generation — not isolated generation latency. The 183 ms
+difference there was likely noise or tool-call variance, not evidence that
+merging adds cost.
 
-The benchmark code used to produce these numbers is reproduced in
-[`instruction.md`](./instruction.md) and can be rerun directly in Colab.
-
-## Why the benchmark result is believable
-
-If the adapter had been left unmerged, then a slowdown would be easier
-to explain: extra low-rank multiplications would be happening during the
-forward pass. But once the adapter is baked in, the inference path looks
-like a normal dense model with modified parameter values. In that case,
-we expect:
-
-1. Similar per-token decode cost, because tensor shapes are unchanged.
-2. Similar memory traffic, because the same kinds of weights still need
-   to be read.
-3. Small observed differences to be dominated by run-to-run noise unless
-   the benchmark is repeated many times under controlled conditions.
-
-The benchmark confirms all three. The right claim for the memo is not
-"merged LoRA is mathematically free." The right claim is narrower and
-more accurate: **merged LoRA does not materially change the inference
-graph or memory footprint per token, so it usually does not materially
-change latency.**
+The full benchmark code is available on
+[GitHub](https://github.com/Natnael-Alemseged/week12-lora-inference-latency/blob/main/instruction.md)
+and can be rerun directly in Colab.
 
 ## A simple analogy
 
@@ -159,8 +137,7 @@ through memory did not.
 
 ## What would actually make the model faster
 
-This also answers the peer's last question: if merged LoRA is not the
-latency lever, what is?
+If merged LoRA is not the latency lever, what is?
 
 The biggest levers are the ones that change memory traffic, parallelism,
 or the number of decode steps:
@@ -177,20 +154,20 @@ or the number of decode steps:
 These are meaningful speed levers because they attack the actual
 bottleneck. Merged LoRA does not.
 
-## What the Week 11 memo should say
+## The corrected claim
 
-The clean takeaway for the evaluation report is:
+The right way to state this in an evaluation report or cost memo is not
+"merged LoRA is mathematically free." The right claim is narrower and
+more accurate:
 
-> The merged LoRA adapter did not materially change latency because
-> `merge_and_unload()` folds the low-rank update into the base weights
-> ahead of inference. After merging, generation runs the same model
-> structure with the same tensor shapes, so decode cost remains dominated
-> by loading and applying base-sized weight matrices rather than by any
-> separate adapter computation. A controlled three-way benchmark (base vs.
-> unmerged vs. merged, 10 runs each on a T4) confirms this: merged and
-> base land within noise of each other (27 ms vs. 26 ms), while unmerged
-> is 2.15× slower (58 ms) due to the extra low-rank path still running
-> at inference time.
+> Merged LoRA does not materially change the inference graph or memory
+> footprint per token. `merge_and_unload()` folds the low-rank update into
+> the base weights ahead of inference, so generation runs the same model
+> structure with the same tensor shapes. A controlled three-way benchmark
+> (base vs. unmerged vs. merged, 10 runs each on a T4) confirms this:
+> merged and base land within noise of each other (27 ms vs. 26 ms),
+> while unmerged is 2.15× slower (58 ms) due to the extra low-rank path
+> still running at inference time.
 
 ## Sources
 
@@ -199,5 +176,5 @@ The clean takeaway for the evaluation report is:
 - HuggingFace PEFT documentation — Conceptual guide to LoRA, including
   the `merge_and_unload()` API.
   [huggingface.co/docs/peft/conceptual_guides/lora](https://huggingface.co/docs/peft/conceptual_guides/lora)
-- Benchmark tool: PEFT 0.14.0 + Transformers 4.51.3, run on Colab T4.
-  Full code in [`instruction.md`](./instruction.md).
+- Benchmark code: PEFT 0.14.0 + Transformers 4.51.3, Colab T4.
+  [github.com/Natnael-Alemseged/week12-lora-inference-latency](https://github.com/Natnael-Alemseged/week12-lora-inference-latency/blob/main/instruction.md)
