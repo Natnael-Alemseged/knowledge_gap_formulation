@@ -1,8 +1,6 @@
-## explainer.md
 
-# Why Merged LoRA Barely Changes Inference Time
 
-While benchmarking a sales conversion classifier fine-tuned on
+While my peer was benchmarking a sales conversion classifier fine-tuned on
 Qwen1.5-0.5B-Chat, a merged LoRA version of the model took 14,228 ms per
 task while the bare base model took 14,045 ms. That 183 ms gap is only
 about 1.3%. Why doesn't merging in extra trained weights make inference
