@@ -18,4 +18,4 @@
 Three-way benchmark: base model vs. unmerged LoRA vs. merged LoRA,
 10 measured runs per condition, warmup discarded.
 Adapter: `Natnaela/my-qwen-0.5b-lora` on base `Qwen/Qwen1.5-0.5B-Chat`.
-Full benchmark code in [`instruction.md`](./instruction.md).
+Full benchmark code in [`instruction.md`](instruction.md).
