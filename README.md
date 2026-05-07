@@ -86,3 +86,53 @@ in a production LLM judge pipeline.
 | [`evening_call_summary.md`](pair_DAY_2/evening_call_summary.md) | Session record and open items |
 | [`signoff.md`](pair_DAY_2/signoff.md) | Gap-closure judgment and artifacts submitted |
 | [`grounding_commit.md`](pair_DAY_2/grounding_commit.md) | Artifact edit record — `_safe_parse_json` before/after and judge migration |
+
+---
+
+## Day 3
+
+**Pair:** Natnael Alemseged × Hiwot Beyene
+
+### My question
+
+In `SalesConversion-Bench/memo.md:32`, the memo states that after SimPO
+tuning the LoRA judge still assigns the wrong log-probability ordering on
+dual-segment ICP preference pairs. Mechanically, how does SimPO compute the
+chosen-vs-rejected margin and propagate gradients through the LoRA adapter
+matrices — and given that mechanism, why would targeted contrast pairs fix
+this failure more directly than adding generic preference data at the same
+scale? See [`question.md`](pair_DAY_3/question.md).
+
+### Explainer I wrote
+
+**DPO vs SimPO: What Your Preference Trainer Is Actually Optimizing** —
+written for Hiwot's question about resolving the mismatch between a
+`DPOTrainer` code path and a SimPO-first methodology narrative in a small
+LoRA preference-tuning run.
+
+### Public artifacts
+
+| Artifact | URL |
+|----------|-----|
+| Blog post | https://dev.to/natnael_alemseged/dpo-vs-simpo-what-your-preference-trainer-is-actually-optimizing-42b4 |
+| Tweet thread | https://x.com/NotaZnation/status/2052491893473259629 |
+
+### Daily deliverables
+
+| File | Contents |
+|------|----------|
+| [`question.md`](pair_DAY_3/question.md) | Sharpened question with artifact pointer |
+| [`question_peer.md`](pair_DAY_3/question_peer.md) | Hiwot's sharpened question answered by my explainer |
+| [`morning_call_summary.md`](pair_DAY_3/morning_call_summary.md) | Morning sharpening notes |
+| [`explainer.md`](pair_DAY_3/explainer.md) | Blog post written for Hiwot's DPO-vs-SimPO objective mismatch |
+| [`thread.md`](pair_DAY_3/thread.md) | 6-tweet thread |
+| [`sources.md`](pair_DAY_3/sources.md) | Canonical sources and log-inspection pattern used |
+| [`evening_call_summary.md`](pair_DAY_3/evening_call_summary.md) | Evening feedback and revision record |
+| [`signoff.md`](pair_DAY_3/signoff.md) | Gap-closure judgment and artifacts submitted |
+| [`grounding_commit.md`](pair_DAY_3/grounding_commit.md) | Pointer to SalesConversion-Bench memo edit and what changed |
+
+### Grounding commit
+
+Edit to SalesConversion-Bench memo naming the unresolved ICP slice, wrong
+log-probability ordering, targeted contrast-pair fix, and 80% re-check gate:
+https://github.com/Natnael-Alemseged/SalesConversion-Bench/commit/565d98e
