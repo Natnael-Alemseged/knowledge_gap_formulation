@@ -136,3 +136,52 @@ LoRA preference-tuning run.
 Edit to SalesConversion-Bench memo naming the unresolved ICP slice, wrong
 log-probability ordering, targeted contrast-pair fix, and 80% re-check gate:
 https://github.com/Natnael-Alemseged/SalesConversion-Bench/commit/565d98e
+
+---
+
+## Day 4
+
+**Pair:** Natnael Alemseged × Yohannes Dereje
+
+### My question
+
+In my Week 11 benchmark, my script bootstraps 47 paired task outcomes and
+reports `P(mean_bootstrap ≤ 0)` as a one-sided p-value. Why is that not a
+valid hypothesis-test p-value, and what null distribution should I use instead
+for the null hypothesis "the trained judge has no true advantage over baseline
+on matched tasks"? See [`question.md`](pair_DAY_4/question.md).
+
+### Explainer I wrote
+
+**Why Pairing Your Bootstrap Is Necessary — And When It Stops Helping** —
+written for Yohannes's question about what mathematical property of a
+within-subject evaluation design makes paired bootstrap the correct procedure,
+and whether an unpaired bootstrap would have changed his reviewer-facing
+conclusion.
+
+### Public artifacts
+
+| Artifact | URL |
+|----------|-----|
+| Blog post | https://dev.to/natnael_alemseged/why-pairing-your-bootstrap-is-necessary-and-when-it-stops-helping-2iim |
+| Tweet thread | https://x.com/NotaZnation/status/2052867037802713390 |
+
+### Daily deliverables
+
+| File | Contents |
+|------|----------|
+| [`question.md`](pair_DAY_4/question.md) | Sharpened question with artifact pointer |
+| [`morning_call_summary.md`](pair_DAY_4/morning_call_summary.md) | How both questions were sharpened in the morning call |
+| [`explainer.md`](pair_DAY_4/explainer.md) | Blog post written for partner's paired bootstrap question |
+| [`thread.md`](pair_DAY_4/thread.md) | 6-tweet thread |
+| [`sources.md`](pair_DAY_4/sources.md) | Canonical sources and tool used |
+| [`evening_call_summary.md`](pair_DAY_4/evening_call_summary.md) | Feedback given and revisions made |
+| [`signoff.md`](pair_DAY_4/signoff.md) | Gap-closure judgment on explainer received |
+| [`grounding_commit.md`](pair_DAY_4/grounding_commit.md) | Pointer to McNemar fix across Week 11 eval scripts |
+
+### Grounding commit
+
+Replaced invalid bootstrap p-value with McNemar's exact test across
+`paired_bootstrap_delta_a.py`, `run_ablations.py`, CFO memo, README,
+evidence graph, and ablation summary:
+https://github.com/Natnael-Alemseged/SalesConversion-Bench/commit/c841f47631bfa3df8d02e8bcc24a73b83adaac53
