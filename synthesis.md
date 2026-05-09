@@ -4,7 +4,7 @@
 
 ---
 
-## The Ten Gaps Closed
+## The Eight Gaps Closed
 
 ### Gaps I named (as asker)
 
@@ -48,9 +48,7 @@ Day 3 was the most technically precise question of the week. It named five possi
 
 Day 4 returned to concision — surgical rather than comprehensive. The broken line of code was named verbatim, the null hypothesis was stated precisely, and the four-property rubric was applied explicitly in a table. The question is shorter than Day 3's but arguably more diagnostic because it names exactly one thing that is wrong and exactly what would constitute a fix.
 
-The trajectory: vague belief → artifact-grounded mechanism → multi-diagnosis triage with full empirical context → surgical single-line identification. The improvement was mostly in learning to ask "what specific claim in what specific artifact would change if I closed this gap?" rather than "what do I not understand about this topic?"
-
-<!-- Add your Day 5 reflection here after completion -->
+The trajectory: vague belief → artifact-grounded mechanism → multi-diagnosis triage with full empirical context → surgical single-line identification. The improvement was mostly in learning to ask "what specific claim in what specific artifact would change if I closed this gap?" rather than "what do I not understand about this topic?" Across the four completed days, the pattern became clear: the strongest questions were the ones that named the exact claim, file, metric, or behavior that would become more defensible after the research.
 
 ---
 
@@ -115,4 +113,3 @@ The practical SimPO implementation. Note: `cpo_alpha` defaults to 1.0, which add
 
 **`scipy.stats.binomtest`**
 One line for McNemar's exact test on paired binary outcomes: `binomtest(k=c, n=b+c, p=0.5, alternative='greater')`. Use this instead of `P(mean_bootstrap ≤ 0)` whenever your evaluation design is within-subject and your outcomes are binary.
-

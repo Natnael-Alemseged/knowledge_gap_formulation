@@ -1,17 +1,17 @@
 # Portfolio Update — Week 12
 
-*How five grounding commits improve the Week 10 and 11 portfolio.*
+*How four grounding commits improve the Week 10 and 11 portfolio.*
 *Written for an FDE hiring manager evaluating production AI system candidates.*
 
 ---
 
 ## What changed and why it matters
 
-Before Week 12, my Week 10 and 11 artifacts contained claims I could not defend under technical scrutiny: a cost projection that assumed caching without verifying it, an architecture description that misrepresented how tool-calling actually works, a training failure diagnosis that named the symptom but not the mechanism, and a significance claim built on a statistically invalid p-value. None of these were visible as errors from the outside — the systems ran, the numbers looked reasonable, and the memos read confidently. Week 12 forced me to find and fix the places where my writing outran my understanding. The five grounding commits below are the evidence that the gaps are closed.
+Before Week 12, my Week 10 and 11 artifacts contained claims I could not defend under technical scrutiny: a cost projection that assumed caching without verifying it, an architecture description that misrepresented how tool-calling actually works, a training failure diagnosis that named the symptom but not the mechanism, and a significance claim built on a statistically invalid p-value. None of these were visible as errors from the outside — the systems ran, the numbers looked reasonable, and the memos read confidently. Week 12 forced me to find and fix the places where my writing outran my understanding. The four grounding commits below are the evidence that the completed gaps are closed.
 
 ---
 
-## The five commits
+## The four commits
 
 | Day | Commit | Artifact touched | What became defensible |
 |-----|--------|-----------------|------------------------|
@@ -25,4 +25,3 @@ Before Week 12, my Week 10 and 11 artifacts contained claims I could not defend 
 ## What the portfolio demonstrates now
 
 The portfolio now shows three things it could not show before Week 12. First, it shows that I can find errors in my own work under time pressure — not errors caught by tests or reviewers, but the subtler class of errors where the system runs correctly and the claim is wrong. Second, it shows that I can close gaps with primary sources rather than secondary summaries: each fix traces to a paper, a specification, or a runnable experiment, not to intuition or a blog post. Third, it shows that the Week 10 and 11 systems are defensible at the mechanism level — I can explain why the architecture choices were made, what the training failure actually means, and what the evaluation numbers actually prove. That combination — shipping a system, finding what you got wrong, and fixing it with the depth an FDE engagement requires — is the competency this portfolio is designed to demonstrate.
-

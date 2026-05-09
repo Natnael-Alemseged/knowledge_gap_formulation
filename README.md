@@ -4,6 +4,12 @@
 
 ---
 
+## Review Index
+
+This repo documents four completed paired research days and the portfolio edits they produced. Start with [`rules.md`](rules.md) for the submission rules and engineering decision criteria, [`synthesis.md`](synthesis.md) for the reflective summary, [`portfolio_update.md`](portfolio_update.md) for the Week 10/11 portfolio impact, and [`canonical_list.md`](canonical_list.md) for the papers, tools, and patterns used.
+
+---
+
 ## Day 1
 
 **Pair:** Natnael Alemseged × Nebiyou Abebe
